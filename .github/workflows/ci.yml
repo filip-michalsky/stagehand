@@ -1,14 +1,15 @@
 name: Evals
-
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
-
 jobs:
   run-evals:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    # Add explicit permission configuration
+    permissions:
+      contents: read
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -17,22 +18,20 @@ jobs:
       BROWSERBASE_PROJECT_ID: ${{ secrets.BROWSERBASE_PROJECT_ID }}
       HEADLESS: true
       EVAL_ENV: browserbase
-
     steps:
+      # Important: Check out PR HEAD after checking permissions
       - name: Check out repository code
         uses: actions/checkout@v4
-
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-
       - name: Install dependencies
         run: npm install --no-frozen-lockfile
-
       - name: Install Playwright browsers
         run: npm exec playwright install --with-deps
-
       - name: Run Evals
         run: npm run evals
         timeout-minutes: 20
