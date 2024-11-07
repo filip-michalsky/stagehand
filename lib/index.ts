@@ -171,6 +171,7 @@ async function applyStealthScripts(context: BrowserContext) {
 }
 
 export class Stagehand {
+  
   private llmProvider: LLMProvider;
   private observations: {
     [key: string]: {
