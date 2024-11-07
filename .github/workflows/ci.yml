@@ -1,9 +1,14 @@
 name: Evals
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
+    types: 
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
 
 jobs:
   run-evals:
